@@ -89,7 +89,7 @@ class Path_following():
                 xd=x0-np.sign(pointsway(b,1)-pointsway(b+1,1))*(abs((pointsway(b,1)-pointsway(b+1,1))/(pointsway(b,0)-pointsway(b+1,0))))*\
                 (y0-yd)                
 
-        self.set_point = [xd,yd]
+        self.set_point = np.array([xd,yd]) 
         return (self.set_point)
 
     def angle(self,a,b):
@@ -100,7 +100,7 @@ class Path_following():
         g = np.aqrt(f)
         h = c/(e*g)
         z = acos(h)
-    return (z)
+    return z
 
     def callback(self,msg):
         '''path_following Callback Function'''
