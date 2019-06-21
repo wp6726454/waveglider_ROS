@@ -7,6 +7,17 @@ import serial
 import numpy as np
 from math import sin, cos, atan
 
+def datafilter(input):
+    '''采集连续的20个数据去掉最大值和最小值之后取中值'''
+    datalist = []
+    if len(datalist)<20:
+        datalist.append(input)
+    else:
+        del datalist[0]
+        datalist.append(input)
+
+    return(sum(datalist)/len(datalist))
+    
 def talker():
     '''lmu Publisher'''
     pub = rospy.Publisher('/Course_real', Float64, queue_size=10)
@@ -33,16 +44,16 @@ def talker():
             m_z=float(am[13])
 
     
-        eta=atan(a_x/(np.sqrt(np.square(a_y)+np.square(a_z))))
-        thita=atan(a_y/(np.sqrt(np.square(a_x)+np.square(a_z))))
-        Hy=m_y*cos(thita)+m_x*sin(thita)*sin(eta)-m_z*cos(eta)*sin(thita)
-        Hx=m_x*cos(eta)+m_z*sin(eta)
-        phi=atan(Hy/Hx)
+            eta=atan(a_x/(np.sqrt(np.square(a_y)+np.square(a_z))))
+            thita=atan(a_y/(np.sqrt(np.square(a_x)+np.square(a_z))))
+            Hy=m_y*cos(thita)+m_x*sin(thita)*sin(eta)-m_z*cos(eta)*sin(thita)
+            Hx=m_x*cos(eta)+m_z*sin(eta)
+            phi=atan(Hy/Hx)
 
 
-        while not rospy.is_shutdown():
-            pub.publish(phi)
-            rate.sleep()
+            while not rospy.is_shutdown():
+                pub.publish(datafilter(phi))
+                rate.sleep()
 
 if __name__ == '__main__':
     try:

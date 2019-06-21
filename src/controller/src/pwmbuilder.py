@@ -7,7 +7,7 @@ import PID
 class PID_controllor():
 
     def __init__(self):
-          rospy.init_node('PID_controllor', anonymous=True)
+          rospy.init_node('pwmbuilder', anonymous=True)
           rate = rospy.Rate(10) # 10hz
           self.pub = rospy.Publisher('/pwm_signal', Float64, queue_size=10)
           rospy.Subscriber("/course_real", Float64, self.callback_real)
