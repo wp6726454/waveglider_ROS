@@ -12,7 +12,7 @@ class Path_following():
     def __init__(self):
           rospy.init_node('path_following', anonymous=True)
           rate = rospy.Rate(10) # 10hz
-          self.pointsway=rospy.get_param('waypoints')
+          self.pointsway=np.array(rospy.get_param('waypoints'))
           self.pub = rospy.Publisher('/course_desired', Float64, queue_size=10)
           self.radius=rospy.get_param('radius')
           self.deta=rospy.get_param('deta')

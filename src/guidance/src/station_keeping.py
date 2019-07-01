@@ -3,8 +3,7 @@
 import rospy
 from std_msgs.msg import UInt64MultiArray
 from std_msgs.msg import Float64
-from math import pi
-from math import atan
+from math import pi, atan
 import numpy
 from numpy import *
 
