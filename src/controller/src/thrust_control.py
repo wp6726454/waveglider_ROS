@@ -2,11 +2,25 @@
 '''thrust_control ROS Node'''
 import rospy
 from std_msgs.msg import Float64
+import RPi.GPIO as GPIO
+import time
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(40,GPIO.OUT)  #根据实际连接接口确定
+eve=GPIO.PWM(40,50)      #输出频率
+eve.start(2.5)           #初始转速
 
 
 def callback(data):
     '''thrust_control Callback Function'''
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+    try:
+        while Ture:
+            eve.ChangeDutyCycle(data.data)
+
+    except:
+        pass
+    eve.stop()
+    GPIO.cleanup
 
 def listener():
     '''thrust_control Subscriber'''
@@ -17,7 +31,7 @@ def listener():
     # run simultaneously.
     rospy.init_node('thrust_control', anonymous=True)
 
-    rospy.Subscriber("chatter", String, callback)
+    rospy.Subscriber("pwm_signal", Float64, callback)
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
