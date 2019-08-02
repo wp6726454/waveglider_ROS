@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 '''PID ROS Node'''
 import rospy
-from std_msgs.msg import String
+#from std_msgs.msg import String
 
 class PID (object):
 

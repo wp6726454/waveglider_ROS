@@ -7,8 +7,10 @@ import serial
 import numpy as np
 from math import sin, cos, atan
 
+
+'''
 def datafilter(input):
-    '''采集连续的20个数据去掉最大值和最小值之后取中值'''
+    ''采集连续的20个数据去掉最大值和最小值之后取中值'
     datalist = []
     if len(datalist)<20:
         datalist.append(input)
@@ -17,10 +19,10 @@ def datafilter(input):
         datalist.append(input)
 
     return(sum(datalist)/len(datalist))
-    
+''' 
 def talker():
     '''lmu Publisher'''
-    pub = rospy.Publisher('/Course_real', Float64, queue_size=10)
+    pub = rospy.Publisher('/course_real', Float64, queue_size=10)
     rospy.init_node('lmu', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     try:
@@ -52,7 +54,7 @@ def talker():
 
 
             while not rospy.is_shutdown():
-                pub.publish(datafilter(phi))
+                pub.publish(phi)
                 rate.sleep()
 
 if __name__ == '__main__':

@@ -1,19 +1,39 @@
 #!/usr/bin/env python
-'''gnss ROS Node'''
+'''BD ROS Node'''
 # license removed for brevity
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import UInt64MultiArray
+import serial
+#from lmu_pub import datafilter
+#import numpy as np
+#from math import sin, cos, atan
 
 def talker():
-    '''gnss Publisher'''
-    pub = rospy.Publisher('chatter', String, queue_size=10)
+    '''lmu Publisher'''
+    pub = rospy.Publisher('/position_real', UInt64MultiArray, queue_size=10)
     rospy.init_node('gnss', anonymous=True)
     rate = rospy.Rate(10) # 10hz
-    while not rospy.is_shutdown():
-        hello_str = "hello world %s" % rospy.get_time()
-        rospy.loginfo(hello_str)
-        pub.publish(hello_str)
-        rate.sleep()
+    try:
+        ser=serial.Serial('/dev/ttyUSB0',9600)
+
+    except Exception:
+        print 'open serial failed.'
+        exit(1)
+
+    while True:
+        s = ser.readline()
+        am=str(s).strip().split(" ")
+        if len(am)<30:
+            continue
+        else:
+            lon=float(am[11])
+            lat=float(am[12])
+
+
+            while not rospy.is_shutdown():
+                pos = [lon, lat]
+                pub.publish(pos)
+                rate.sleep()
 
 if __name__ == '__main__':
     try:
