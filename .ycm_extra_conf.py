@@ -21,7 +21,13 @@ flags = [
 '-isystem',
 '/home/wp/waveglider/devel/include',
 '-isystem',
-'/home/wp/waveglider/src/CMakeLists.txt/include'
+'/home/wp/waveglider/src/controller/include',
+'-isystem',
+'/home/wp/waveglider/src/gui/include',
+'-isystem',
+'/home/wp/waveglider/src/guidance/include',
+'-isystem',
+'/home/wp/waveglider/src/navigation/include'
 ]
 
 compilation_database_folder = ''

@@ -137,6 +137,7 @@ class RMS_show(QMainWindow,Ui_RMS):
                 setpoint = millerToXY(self.PositionKeeping_Lon.value(),self.PositionKeeping_Lat.value())
                 setpoint_xy = [-setpoint[1],setpoint[0]]
                 self.positionkeeping_pub.publish(setpoint_xy)
+                rospy.loginfo("setpoint is :: %f", setpoint_xy)
             except Exception:
                 self.textEdit.setText("Fail to load set point")
         elif self.checkBox_2.isChecked():
@@ -148,6 +149,7 @@ class RMS_show(QMainWindow,Ui_RMS):
                 Point5_xy = millerToXY(self.Point5_Lon.value(),self.Point5_Lat.value())
                 waypoints_xy = np.array([[-Point1_xy[1],Point1_xy[0]],[-Point2_xy[1],Point2_xy[0]],[-Point3_xy[1],Point3_xy[0]],[-Point4_xy[1],Point4_xy[0]],[-Point5_xy[1],Point5_xy[0]]])
                 self.pathfollowing_pub.publish(waypoints_xy)
+                rospy.loginfo("pointsway is set as:: %f", waypoints_xy)
             except Exception:
                 self.textEdit.setText("Fail to load waypoints")
 

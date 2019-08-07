@@ -32,7 +32,8 @@ class PID_controllor():
         while not rospy.is_shutdown():
 
             self.controllor = PID(kp, kd, ki, minOutput, maxOutput, integratorMin, integratorMax)
-            self.pub.publish(self.controllor.update(course_real, course_desired))
+            self.dc=f(self.controller.update(course_real, course_desired))
+            self.pub.publish(self.dc)
 
 if __name__ == '__main__':
 # spin() simply keeps python from exiting until this node is stopped
