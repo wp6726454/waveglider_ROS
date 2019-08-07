@@ -2,7 +2,7 @@
 '''thrust_control ROS Node'''
 import rospy
 from std_msgs.msg import Float64
-import PID
+from PID import PID
 
 class PID_controllor():
 
@@ -17,12 +17,14 @@ class PID_controllor():
 
     def callback_real(self, msg):
         
-        global course_real = msg.data
+        global course_real 
+        course_real = msg.data
         rospy.loginfo("the real course now is : %f", msg.data)
         
     def callback_desired(self, msg):
 
-        global course_desired = msg.data
+        global course_desired 
+        course_desired = msg.data
         rospy.loginfo("the desired course now is : %f", msg.data)
 
     def pwm(self, course_desired, course_real):

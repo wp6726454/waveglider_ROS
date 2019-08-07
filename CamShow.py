@@ -1,7 +1,7 @@
 from OboardCamDisp import Ui_MainWindow
 import sys
-from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog
-from PyQt5.QtCore import QTimer,QCoreApplication
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PyQt5.QtCore import QTimer, QCoreApplication
 from PyQt5.QtGui import QPixmap
 import cv2
 import qimage2ndarray
