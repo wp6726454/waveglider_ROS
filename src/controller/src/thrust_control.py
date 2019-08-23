@@ -3,36 +3,71 @@
 import rospy
 from std_msgs.msg import Float64
 import pigpio
+from PID import PID
+import json
 
-pi.set_PWM_frequency(23,50)  #根据实际连接接口确定
-pi.set_PWM_range(23,20000)
+class PID_controllor():
+
+    def __init__(self):
+        rospy.init_node('pwmbuilder', anonymous=True)
+        rate = rospy.Rate(1) # 1hz
+        self.course_real = 0.0
+        self.course_desired = 0.0
+        rospy.Subscriber("/course_real", Float64, self.callback_real)
+        rospy.Subscriber("/course_desired", Float64, self.callback_desired)
+        rate.sleep()
+        controllor = PID(5, 6, 0.1, -10, 10, -0.5, 0.5)
+        pi = pigpio.pi()
+        pi.set_PWM_frequency(23,50)  
+        pi.set_PWM_range(23,20000)
+        while not rospy.is_shutdown():
+            #calculate thrust by PID
+            F = controllor.update(self.course_real, self.course_desired)
+            #calculate pwm signal
+            dc=-2.9*F
+
+    	    dc_save='dc.json'
+            with open(dc_save,'a') as dc_obj:
+                dc_obj.write('\n'+str(dc))
+            count = len(open(dc_save, 'r').readlines())
+            if count < 200:
+                pass
+            else:
+                for line in fileinput.input('dc.json', inplace=1):
+                    if not fileinput.isfirstline():
+                        print(line.replace('\n',''))
+                for line in fileinput.input('dc.json', inplace=1):
+                    if not fileinput.isfirstline():
+                        print(line.replace('\n',''))
 
 
-def callback(data):
-    '''thrust_control Callback Function'''
-    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
-    try:
-        while Ture:
-            pi.set_PWM_dutycycle(23,data.data)
+            with open(dc_save,'r') as f:
+                lines=f.readlines()
+                last_dc=lines[-1]
+            if last_dc < dc:
+                for i in range(last_dc,dc):
+                    pi.set_PWM_dutucycle(23,i)
+            elif last_dc > dc:
+                for i in range(dc,last_dc):
+                    pi.set_PWM_dutucycle(23,i)
+                else:
+                    pi.set_PWM_dutucycle(23,dc)       
 
-    except:
-        pass
-    eve.stop()
-    GPIO.cleanup
+            rospy.loginfo("the result is %f", dc)
 
-def listener():
-    '''thrust_control Subscriber'''
-    # In ROS, nodes are uniquely named. If two nodes with the same
-    # node are launched, the previous one is kicked off. The
-    # anonymous=True flag means that rospy will choose a unique
-    # name for our 'listener' node so that multiple listeners can
-    # run simultaneously.
-    rospy.init_node('thrust_control', anonymous=True)
 
-    rospy.Subscriber("pwm_signal", Float64, callback)
-
-    # spin() simply keeps python from exiting until this node is stopped
-    rospy.spin()
+    def callback_real(self, msg): 
+        rospy.loginfo("the real course now is : %f", msg.data)
+        self.course_real = msg.data
+        
+    def callback_desired(self, msg): 
+        rospy.loginfo("the desired course now is : %f", msg.data)
+        self.course_desired = msg.data
 
 if __name__ == '__main__':
-    listener()
+    try:
+        PID_controllor()
+        rospy.spin()
+    except rospy.ROSInterruptException:
+        pass
+    
